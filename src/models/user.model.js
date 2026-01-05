@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
 
 const UserSchema = new Schema({
         name: {
@@ -33,6 +33,7 @@ const UserSchema = new Schema({
 
         password: {
             type: String,
+            trim: true,
             require: true,
         },
     },

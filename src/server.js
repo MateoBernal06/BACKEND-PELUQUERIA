@@ -1,6 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 import connectionDataBase from './database/database.js'; 
+import Usuarios from './routes/user.route.js'
 import 'dotenv/config';
 import 'colors'
 
@@ -14,6 +15,8 @@ const PORT = process.env.PORT
 app.get('/', (req, res)=>{
     res.send('Server OK')
 })
+
+app.use('/api/v1', Usuarios)
 
 app.use((req, res, next)=>{
     res.status(404).json({
