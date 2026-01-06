@@ -1,4 +1,5 @@
 import Usuario from '../models/user.model.js'
+import generateToken from '../middlewares/generateToken.js'
 
 const register = async(req, res) =>{
     try {
@@ -89,8 +90,11 @@ const login = async(req, res) => {
             })
         }
 
+        const token = generateToken(user._id)
+
         return res.status(200).json({
-            ok: true
+            ok: true,
+            token
         })
 
 
