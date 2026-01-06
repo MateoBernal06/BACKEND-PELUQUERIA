@@ -7,7 +7,7 @@ const register = async(req, res) =>{
         if(!name || !surname || !phone || !address || !email || !password){
             return res.status(400).json({
                 ok: false,
-                msg: 'Campos vacios'
+                msg: 'Todos los campos son obligatorios'
             })
         }
     
@@ -18,31 +18,34 @@ const register = async(req, res) =>{
             })
         }
     
-        const findUser = await Usuario.find({email})
-        if(findUser[0]){
+        const findUser = await Usuario.findOne({email})
+        if(findUser){
             return res.status(400).json({
                 ok: false,
                 msg: 'Correo electronico invalido'
             })
         }
-        if(password<10){
+
+        if(password.length<10){
             return res.status(400).json({
                 ok: false,
                 msg: 'La contraseña de contener 10 Digitos'
             })
         }
-    
-        const user = new Usuario({
+
+        
+        let user = new Usuario({
             name, 
             surname, 
             phone, 
             email, 
             password
         })
-    
+
+        user.password = await user.encryptPassword(password)
         await user.save()
     
-        res.json({
+        return res.json({
             ok: true,
             msg: 'Usuario creado exitosamente'
         })
@@ -57,7 +60,52 @@ const register = async(req, res) =>{
     
 }
 
+const login = async(req, res) => {
+    
+    try {
+        const {email, password} = req.body
+    
+        if(!email || !password){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Todos los campos son obligatorios' 
+            })
+        }
+
+        const user = await Usuario.findOne({email})
+        if(!user){
+            return res.status(400).json({
+                ok: false,
+                msg: 'Correo electronico invalido'
+            })
+        }
+
+        const comparePassword =  await user.getPassword(password,user.password)
+        
+        if(!comparePassword){
+            return res.status(400).json({
+                ok: false,
+                msg: `Contraseña incorrecta`
+            })
+        }
+
+        return res.status(200).json({
+            ok: true
+        })
+
+
+    } catch (error) {
+        
+        res.status(404).json({
+            ok: false, 
+            msg: `Error inesperado con el usuario: ${error.message}`
+        })
+    }
+
+}
+
 
 export {
-    register
+    register, 
+    login
 }
