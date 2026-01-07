@@ -87,9 +87,14 @@ const login = async(req, res) => {
 
         const token = generateToken(admin._id)
 
+        const data = await Administrador.findOne({email}).select(
+            "name surname phone address email"
+        )
+
         return res.status(200).json({
             ok: true,
-            token
+            token,
+            data
         })
 
     } catch (error) {

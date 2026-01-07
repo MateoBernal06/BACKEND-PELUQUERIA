@@ -92,11 +92,16 @@ const login = async(req, res) => {
             })
         }
 
+        const data = await Usuario.findOne({email}).select(
+            "name surname phone address email"
+        )
+
         const token = generateToken(user._id)
 
         return res.status(200).json({
             ok: true,
-            token
+            token,
+            data
         })
 
 
