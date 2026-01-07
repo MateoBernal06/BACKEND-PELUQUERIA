@@ -2,6 +2,7 @@ import express from 'express'
 import morgan from 'morgan'
 import connectionDataBase from './database/database.js'; 
 import Usuarios from './routes/user.route.js'
+import Administrador from './routes/admin.route.js'
 import 'dotenv/config';
 import 'colors'
 
@@ -17,6 +18,7 @@ app.get('/', (req, res)=>{
 })
 
 app.use('/api/v1', Usuarios)
+app.use('/api/v1', Administrador)
 
 app.use((req, res, next)=>{
     res.status(404).json({

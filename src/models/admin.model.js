@@ -1,4 +1,5 @@
-import { Schema } from "mongoose";
+import { Schema, model } from "mongoose";
+import bcrypt from 'bcrypt'
 
 const AdminSchema = new Schema(
     {
@@ -20,6 +21,11 @@ const AdminSchema = new Schema(
             trim: true,
         },
 
+        rol: {
+            type: String,
+            default: 'Administrador'
+        },
+
         email: {
             type: String,
             require: true,
@@ -37,5 +43,15 @@ const AdminSchema = new Schema(
     }
 );
 
+AdminSchema.methods.encryptPassword = async function(password) {
+    const salt = await bcrypt.genSalt(10)
+    const hash = await bcrypt.hash(password, salt)
+    return hash
+}
+
+AdminSchema.methods.comparePassword = async function(text, hash) {
+    const compare = await bcrypt.compare(text, hash)
+    return compare
+}
 
 export default model("Administrador", AdminSchema);

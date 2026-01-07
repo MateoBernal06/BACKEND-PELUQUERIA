@@ -30,7 +30,7 @@ const register = async(req, res) =>{
         if(password.length<10){
             return res.status(400).json({
                 ok: false,
-                msg: 'La contraseña de contener 10 Digitos'
+                msg: 'La contraseña debe contener 10 Digitos'
             })
         }
 
@@ -74,12 +74,14 @@ const login = async(req, res) => {
         }
 
         const user = await Usuario.findOne({email})
+
         if(!user){
             return res.status(400).json({
                 ok: false,
                 msg: 'Correo electronico invalido'
             })
         }
+
 
         const comparePassword =  await user.getPassword(password,user.password)
         
